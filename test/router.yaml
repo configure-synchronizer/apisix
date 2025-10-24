@@ -1,10 +1,10 @@
 routes:
   - id: api-gateway-health
-  uri: /health
-  upstream:
-    type: roundrobin
-    nodes:
-      localhost:9080: 1
-  plugins:
-    echo:
-      body: "APISIX Gateway is healthy"
+    uri: /health
+    upstream:
+      type: roundrobin
+      nodes:
+        localhost:9080: 1
+    plugins:
+      echo:
+        body: "APISIX Gateway is healthy"
