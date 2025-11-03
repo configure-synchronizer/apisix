@@ -13,7 +13,7 @@ set -euo pipefail
 # shellcheck source=https://gitea.com/storezhang/script/raw/branch/main/core/log.sh
 source <(wget -q -O - https://gitea.com/storezhang/script/raw/branch/main/core/log.sh)
 
-log debug 启动配置加载器 "target: ${target}, interval: ${interval}"
+log debug 启动配置加载器 "{target: ${target}, interval: ${interval}}"
 
 if [[ "${REMOTE}" =~ ^https?:// ]]; then
   if [ -n "${USERNAME}" ] && [ -n "${PASSWORD}" ]; then
@@ -21,11 +21,11 @@ if [[ "${REMOTE}" =~ ^https?:// ]]; then
 default login ${USERNAME} password ${PASSWORD}
 EOF
   else
-    log error 写入配置出错 "username: ${USERNAME}, password: ${PASSWORD}"
+    log error 写入配置出错 "{username: ${USERNAME}, password: ${PASSWORD}}"
   fi
 fi
 
-log info 创建工作目录 "dir: ${workdir}"
+log info 创建工作目录 "{dir: ${workdir}}"
 mkdir -p "${workdir}"
 
 while true; do
@@ -38,7 +38,7 @@ while true; do
       pull=true
     fi
   else
-    log info 检出代码 "dir: ${workdir}, remote: ${REMOTE}"
+    log info 检出代码 "{dir: ${workdir}, remote: ${REMOTE}}"
     git clone "${REMOTE}" "${workdir}" > /dev/null 2>&1 # 不显示输出
     pull=true
   fi
@@ -47,13 +47,15 @@ while true; do
     mkdir -p "$(dirname ${merged_file})" > /dev/null 2>&1
     touch ${merged_file}
 
-    log info 合并配置文件 "dir: ${workdir}"
+    log info 合并配置文件 "{dir: ${workdir}}"
     find "${workdir}" -type f \( -name "*.yaml" -o -name "*.yml" \) -print0 | xargs -0  yq eval-all ". as \$item ireduce ({}; . *+ \$item)" > ${merged_file}
 
     if yq --exit-status 'tag == "!!map" or tag == "!!seq"' "${merged_file}" >/dev/null; then
       config_file=${target}/${filename}
       if [ "${replace}" = true ]; then
-        log info 配置文件格式正确，替换新的配置 "to: ${config_file}, from: ${merged_file}"
+        log info 配置文件格式正确，替换新的配置 "{to: ${config_file}, from: ${merged_file}}"
+        echo "#END" >> "${merged_file}"
+        cat ${merged_file}
         cat "${merged_file}" > "${config_file}" # 写入文件内容
       fi
     else
