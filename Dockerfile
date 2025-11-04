@@ -18,6 +18,14 @@ LABEL author="storezhang<华寅>" \
     wechat="storezhang" \
     description="网关配置刷新插件"
 
+# 所需环境变量
+ENV USERNAME ""
+ENV PASSWORD ""
+ENV REPLACE true
+ENV WORKDIR /tmp/apisix
+ENV TARGET /etc/apisix/conf.d
+ENV FILENAME apisix.yaml
+
 RUN set -ex \
     \
     \
@@ -33,14 +41,6 @@ RUN set -ex \
 
 # 一次性复制所有文件，充分利用构建缓存，同时减少镜像层级
 COPY --from=builder /docker /
-
-# 所需环境变量
-ENV USERNAME ""
-ENV PASSWORD ""
-ENV REPLACE true
-ENV WORKDIR /tmp/apisix
-ENV TARGET /etc/apisix/conf.d
-ENV FILENAME apisix.yaml
 
 # 启动命令
 ENTRYPOINT ["/usr/local/bin/synchronizer.sh"]
