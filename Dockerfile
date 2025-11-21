@@ -1,9 +1,9 @@
-FROM mikefarah/yq:4.48.1 AS yq
+FROM ccr.ccs.tencentyun.com/gway/cli:0.0.1 AS gateway
 
 
 FROM ccr.ccs.tencentyun.com/dockerat/alpine:3.20.1 AS builder
 # 复制文件
-COPY --from=yq /usr/bin/yq /docker/usr/bin/yq
+COPY --from=gateway /usr/local/bin/gateway /docker/usr/local/bin/gateway
 COPY docker /docker
 
 
