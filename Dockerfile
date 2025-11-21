@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/gway/cli:0.0.1 AS gateway
+FROM ccr.ccs.tencentyun.com/gway/cli:0.0.2 AS gateway
 
 
 FROM ccr.ccs.tencentyun.com/dockerat/alpine:3.20.1 AS builder
